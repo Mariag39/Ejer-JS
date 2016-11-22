@@ -35,13 +35,20 @@ var PreloaderScene = {
     
     
     this.load.onLoadStart.add(this.loadStart, this);
+    this.game.load.tilemap('tilemap', 'images/map.json');
+    this.game.load.image('tiles', 'images/simples_pimples.png');
+    this.game.load.atlas('atlasJSONHash','images/rush_spritesheet.png', 'images/rush_spritesheet.json');
+
     //TODO 2.1 Cargar el tilemap images/map.json con el nombre de la cache 'tilemap'.
       //la imagen 'images/simples_pimples.png' con el nombre de la cache 'tiles' y
       // el atlasJSONHash con 'images/rush_spritesheet.png' como imagen y 'images/rush_spritesheet.json'
       //como descriptor de la animación.
 
       //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-
+      
+      /*onLoadComplete: function() {
+  			this.ready = true;
+		}*/
   },
 
   loadStart: function () {
@@ -79,13 +86,15 @@ window.onload = function () {
   var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
 
 //TODO 1.2 Añadir los states 'boot' BootScene, 'menu' MenuScene, 'preloader' PreloaderScene, 'play' PlayScene, 'gameOver' GameOver.
-game.state.add('boot', BootScene);
-game.state.add('menu', MenuScene);
-game.state.add('preloader', PreloaderScene);
-game.state.add('play', PlayScene);
-game.state.add('gameOver', GameOver);
+  game.state.add('boot', BootScene);
+  game.state.add('menu', MenuScene);
+  game.state.add('preloader', PreloaderScene);
+  game.state.add('play', PlayScene);
+  game.state.add('gameOver', GameOver);
+
+  
 
 //TODO 1.3 iniciar el state 'boot'. 
-game.state.start('boot');
+  game.state.start('boot');
     
 };

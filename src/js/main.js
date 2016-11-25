@@ -41,14 +41,11 @@ var PreloaderScene = {
     this.game.load.tilemap('tilemap', 'images/map.json');
     this.game.load.image('tiles', 'images/simples_pimples.png');
     this.game.load.atlas('atlasJSONHash','images/rush_spritesheet.png', 'images/rush_spritesheet.json');
+
 	},
       //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-      
-  onLoadComplete: function() {
-  	this.ready = true;
-  },
-  
-
+    this.game.load.onLoadComplete.add(this, loadComplete, this);
+  	
   loadStart: function () {
     //this.game.state.start('play');
     console.log("Game Assets Loading ...");
@@ -59,7 +56,7 @@ var PreloaderScene = {
      //(Creo que es asi)
 
    loadComplete: function(){
-     this.game.state.start('play');
+    this.ready == true;
    },
     
     
@@ -81,24 +78,29 @@ var wfconfig = {
     }
  
 };
- 
-//TODO 3.2 Cargar Google font cuando la página esté cargada con wfconfig.
-//TODO 3.3 La creación del juego y la asignación de los states se hará en el método init().
+function init (){
 
-window.onload = function () {
-  WebFont.load(wfconfig); 	//carga la fuente definida en el objeto anterior. (3.2)
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
-
-//TODO 1.2 Añadir los states 'boot' BootScene, 'menu' MenuScene, 'preloader' PreloaderScene, 'play' PlayScene, 'gameOver' GameOver.
   game.state.add('boot', BootScene);
   game.state.add('menu', MenuScene);
   game.state.add('preloader', PreloaderScene);
   game.state.add('play', PlayScene);
   game.state.add('gameOver', GameOver);
 
+  game.state.start('boot');
+
+  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+  this.game.state.start('play');
+
+}
+ 
+//TODO 3.3 La creación del juego y la asignación de los states se hará en el método init().
+
+window.onload = function () {
+  //TODO 3.2 Cargar Google font cuando la página esté cargada con wfconfig.
+
+  WebFont.load(wfconfig); 	//carga la fuente definida en el objeto anterior. (3.2)
   
 
-//TODO 1.3 iniciar el state 'boot'. 
-  game.state.start('boot');
-    
+
+ 
 };

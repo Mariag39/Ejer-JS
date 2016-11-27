@@ -44,7 +44,7 @@ var PreloaderScene = {
 
 	},
       //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-    this.game.load.onLoadComplete.add(this, loadComplete, this);
+  		this.game.load.onLoadComplete.add(this, loadComplete, this);
   	
   loadStart: function () {
     //this.game.state.start('play');
@@ -89,7 +89,7 @@ function init (){
   game.state.start('boot');
 
   var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
-  this.game.state.start('play');
+  game.state.start('play');
 
 }
  

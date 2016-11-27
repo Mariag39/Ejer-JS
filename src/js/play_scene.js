@@ -22,7 +22,7 @@ var PlayScene = {
 
     //4
     this.map = this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
-    this.game.load.image('tiles', 'images/simples_pimples.png');
+    var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
 
     }, 
     //Método constructor...
@@ -33,7 +33,7 @@ var PlayScene = {
       this._rush.frame = rush_idle01;  // not sure ¿?¿?¿?¿?¿?
 
       //TODO 4: Cargar el tilemap 'tilemap' y asignarle al tileset 'patrones' la imagen de sprites 'tiles'
-      this.map.addTilesetImage('simples_pimples', 'tiles');
+      this.map.addTilesetImage('patrones', 'tiles');
 
       //Creacion de las layers
       this.backgroundLayer = this.map.createLayer('BackgroundLayer');
@@ -200,6 +200,12 @@ var PlayScene = {
     },
     
     //TODO 9 destruir los recursos tilemap, tiles y logo.
+    free: function() {
+
+    this.cache.removeTilemap('tilemap');
+    this.cache.removeImage('patrones');
+    this.cache.removeImage('logo');
+    }
 
 };
 

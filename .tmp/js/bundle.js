@@ -14,9 +14,25 @@ var GameOver = {
         button.addChild(text);
         
         //TODO 8 crear un boton con el texto 'Return Main Menu' que nos devuelva al menu del juego.
-    }
+         var button2 = this.game.add.button(400, 150, 
+                                          'button2', 
+                                          this.actionOnClick2, 
+                                          this, 2, 1, 0);
+        button2.anchor.set(0.5);
+        var gText = this.game.add.text(400, 100, "MainMenu");
+        var texto = this.game.add.text(0, 0, "Return Main Menu");
+        texto.anchor.set(0.5);
+        gText.anchor.set(0.5);
+        button2.addChild(text);
+    },
+     actionOnClick2: function () {
+        game.state.start('menu');
+    },
     
     //TODO 7 declarar el callback del boton.
+    actionOnClick: function () {
+        game.state.start('play');
+    }
 
 };
 
@@ -55,19 +71,23 @@ var PreloaderScene = {
     this.loadingBar.anchor.setTo(0, 0.5); 
     this.game.load.setPreloadSprite(this.loadingBar);
     this.game.stage.backgroundColor = "#000000";
-    
-    
-    
-    this.load.onLoadStart.add(this.loadStart, this);
+   
     //TODO 2.1 Cargar el tilemap images/map.json con el nombre de la cache 'tilemap'.
       //la imagen 'images/simples_pimples.png' con el nombre de la cache 'tiles' y
       // el atlasJSONHash con 'images/rush_spritesheet.png' como imagen y 'images/rush_spritesheet.json'
       //como descriptor de la animación.
+      //(HECHO)
+    this.load.onLoadStart.add(this.loadStart, this);
+    this.game.load.tilemap('tilemap', 'images/map.json');
+    this.game.load.image('tiles', 'images/simples_pimples.png');
+    this.game.load.atlas('atlasJSONHash','images/rush_spritesheet.png', 'images/rush_spritesheet.json');
 
+	},
       //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-
-  },
-
+    onLoadComplete: function (){
+  		game.load.onLoadComplete.add(this, loadComplete, this);
+    },
+  	
   loadStart: function () {
     //this.game.state.start('play');
     console.log("Game Assets Loading ...");
@@ -75,7 +95,12 @@ var PreloaderScene = {
     
     
      //TODO 2.2b function loadComplete()
+     //(Creo que es asi)
 
+   loadComplete: function(){
+    this.ready == true;
+   },
+    
     
     update: function(){
         this._loadingBar
@@ -95,19 +120,31 @@ var wfconfig = {
     }
  
 };
+function init (){
+
+  game.state.add('boot', BootScene);
+  game.state.add('menu', MenuScene);
+  game.state.add('preloader', PreloaderScene);
+  game.state.add('play', PlayScene);
+  game.state.add('gameOver', GameOver);
+
+  game.state.start('boot');
+
+  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+  game.state.start('play');
+
+}
  
-//TODO 3.2 Cargar Google font cuando la página esté cargada con wfconfig.
 //TODO 3.3 La creación del juego y la asignación de los states se hará en el método init().
 
 window.onload = function () {
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+  //TODO 3.2 Cargar Google font cuando la página esté cargada con wfconfig.
 
-//TODO 1.2 Añadir los states 'boot' BootScene, 'menu' MenuScene, 'preloader' PreloaderScene, 'play' PlayScene, 'gameOver' GameOver.
+  WebFont.load(wfconfig); 	//carga la fuente definida en el objeto anterior. (3.2)
+  
 
 
-//TODO 1.3 iniciar el state 'boot'. 
-
-    
+ 
 };
 
 },{"./gameover_scene":1,"./menu_scene":3,"./play_scene":4}],3:[function(require,module,exports){
@@ -152,14 +189,28 @@ var PlayScene = {
     _jumpHight: 150, //altura máxima del salto.
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
+    map: {},
 
+
+  preload: function () {
+    //5
+    this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
+
+    //4
+    this.map = this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
+    var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
+
+    }, 
     //Método constructor...
   create: function () {
       //Creamos al player con un sprite por defecto.
       //TODO 5 Creamos a rush 'rush'  con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
-      
+      this._rush = this.game.add.sprite(10, 10, 'rush');
+      this._rush.frame = rush_idle01;  // not sure ¿?¿?¿?¿?¿?
+
       //TODO 4: Cargar el tilemap 'tilemap' y asignarle al tileset 'patrones' la imagen de sprites 'tiles'
-      
+      this.map.addTilesetImage('patrones', 'tiles');
+
       //Creacion de las layers
       this.backgroundLayer = this.map.createLayer('BackgroundLayer');
       this.groundLayer = this.map.createLayer('GroundLayer');
@@ -271,6 +322,8 @@ var PlayScene = {
     
     onPlayerFell: function(){
         //TODO 6 Carga de 'gameOver';
+        this.game.state.start('gameOver');
+
     },
     
     checkPlayerFell: function(){

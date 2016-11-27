@@ -44,7 +44,9 @@ var PreloaderScene = {
 
 	},
       //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-  		this.game.load.onLoadComplete.add(this, loadComplete, this);
+    onLoadComplete: function (){
+  		game.load.onLoadComplete.add(this, loadComplete, this);
+    },
   	
   loadStart: function () {
     //this.game.state.start('play');

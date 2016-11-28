@@ -21,6 +21,9 @@ var BootScene = {
   create: function () {
     //this.game.state.start('preloader');
       this.game.state.start('menu');
+
+      //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
+      game.load.onLoadComplete.add(loadComplete, this);
   }
 };
 
@@ -41,18 +44,14 @@ var PreloaderScene = {
     this.game.load.tilemap('tilemap', 'images/map.json');
     this.game.load.image('tiles', 'images/simples_pimples.png');
     this.game.load.atlas('atlasJSONHash','images/rush_spritesheet.png', 'images/rush_spritesheet.json');
-
+    	//¿cambiar atlas por image?
 	},
-      //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-    onLoadComplete: function (){
-  		game.load.onLoadComplete.add(this, loadComplete, this);
-    },
+      
   	
   loadStart: function () {
     //this.game.state.start('play');
     console.log("Game Assets Loading ...");
   },
-    
     
      //TODO 2.2b function loadComplete()
      //(Creo que es asi)
@@ -82,15 +81,15 @@ var wfconfig = {
 };
 function init (){
 
-  game.state.add('boot', BootScene);
-  game.state.add('menu', MenuScene);
-  game.state.add('preloader', PreloaderScene);
-  game.state.add('play', PlayScene);
-  game.state.add('gameOver', GameOver);
-
-  game.state.start('boot');
-
   var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+  game.state.add('preloader', PreloaderScene);
+  game.state.add('boot', BootScene);
+  game.state.add('menu', menu);
+  game.state.add('gameOver', gameOver);
+  game.state.add('play', play);
+ 
+  game.state.start('boot');
+ 
   game.state.start('play');
 
 }

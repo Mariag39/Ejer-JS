@@ -15,24 +15,19 @@ var PlayScene = {
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
     map: {},
 
-
-  preload: function () {
-    //5
-    this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
-
-    //4
-    this.map = this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
-    var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
-
-    }, 
     //Método constructor...
   create: function () {
+
       //Creamos al player con un sprite por defecto.
-      //TODO 5 Creamos a rush 'rush'  con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
+      //TODO 5 Creamos a rush 'rush' con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
+      var rush = this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
       this._rush = this.game.add.sprite(10, 10, 'rush');
-      this._rush.frame = rush_idle01;  // not sure ¿?¿?¿?¿?¿?
+      //this._rush.frame = rush_idle;  // not sure ¿?¿?¿?¿?¿?
 
       //TODO 4: Cargar el tilemap 'tilemap' y asignarle al tileset 'patrones' la imagen de sprites 'tiles'
+      this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
+      var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
+      this.map = this.game.add.tilemap('tilemap');
       this.map.addTilesetImage('patrones', 'tiles');
 
       //Creacion de las layers
@@ -204,7 +199,7 @@ var PlayScene = {
 
     this.cache.removeTilemap('tilemap');
     this.cache.removeImage('patrones');
-    this.cache.removeImage('logo');
+    this.game.world.setBounds(0,0,800,600);
     }
 
 };

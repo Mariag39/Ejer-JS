@@ -61,6 +61,9 @@ var BootScene = {
   create: function () {
     //this.game.state.start('preloader');
       this.game.state.start('menu');
+
+      //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
+      game.load.onLoadComplete.add(loadComplete, this);
   }
 };
 
@@ -81,18 +84,14 @@ var PreloaderScene = {
     this.game.load.tilemap('tilemap', 'images/map.json');
     this.game.load.image('tiles', 'images/simples_pimples.png');
     this.game.load.atlas('atlasJSONHash','images/rush_spritesheet.png', 'images/rush_spritesheet.json');
-
+    	//¿cambiar atlas por image?
 	},
-      //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-    onLoadComplete: function (){
-  		game.load.onLoadComplete.add(this, loadComplete, this);
-    },
+      
   	
   loadStart: function () {
     //this.game.state.start('play');
     console.log("Game Assets Loading ...");
   },
-    
     
      //TODO 2.2b function loadComplete()
      //(Creo que es asi)
@@ -122,15 +121,15 @@ var wfconfig = {
 };
 function init (){
 
-  game.state.add('boot', BootScene);
-  game.state.add('menu', MenuScene);
-  game.state.add('preloader', PreloaderScene);
-  game.state.add('play', PlayScene);
-  game.state.add('gameOver', GameOver);
-
-  game.state.start('boot');
-
   var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+  game.state.add('preloader', PreloaderScene);
+  game.state.add('boot', BootScene);
+  game.state.add('menu', menu);
+  game.state.add('gameOver', gameOver);
+  game.state.add('play', play);
+ 
+  game.state.start('boot');
+ 
   game.state.start('play');
 
 }
@@ -191,24 +190,19 @@ var PlayScene = {
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
     map: {},
 
-
-  preload: function () {
-    //5
-    this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
-
-    //4
-    this.map = this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
-    var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
-
-    }, 
     //Método constructor...
   create: function () {
+
       //Creamos al player con un sprite por defecto.
-      //TODO 5 Creamos a rush 'rush'  con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
+      //TODO 5 Creamos a rush 'rush' con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
+      var rush = this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
       this._rush = this.game.add.sprite(10, 10, 'rush');
-      this._rush.frame = rush_idle01;  // not sure ¿?¿?¿?¿?¿?
+      //this._rush.frame = rush_idle;  // not sure ¿?¿?¿?¿?¿?
 
       //TODO 4: Cargar el tilemap 'tilemap' y asignarle al tileset 'patrones' la imagen de sprites 'tiles'
+      this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
+      var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
+      this.map = this.game.add.tilemap('tilemap');
       this.map.addTilesetImage('patrones', 'tiles');
 
       //Creacion de las layers
@@ -376,6 +370,12 @@ var PlayScene = {
     },
     
     //TODO 9 destruir los recursos tilemap, tiles y logo.
+    free: function() {
+
+    this.cache.removeTilemap('tilemap');
+    this.cache.removeImage('patrones');
+    this.game.world.setBounds(0,0,800,600);
+    }
 
 };
 

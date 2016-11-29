@@ -15,23 +15,21 @@ var GameOver = {
         
         //TODO 8 crear un boton con el texto 'Return Main Menu' que nos devuelva al menu del juego.
          var button2 = this.game.add.button(400, 150, 
-                                          'button2', 
+                                          'button', 
                                           this.actionOnClick2, 
                                           this, 2, 1, 0);
         button2.anchor.set(0.5);
-        var gText = this.game.add.text(400, 100, "MainMenu");
         var texto = this.game.add.text(0, 0, "Return Main Menu");
         texto.anchor.set(0.5);
-        gText.anchor.set(0.5);
-        button2.addChild(text);
+        button2.addChild(texto);
     },
      actionOnClick2: function () {
-        game.state.start('menu');
+        this.game.state.start('menu');
     },
     
     //TODO 7 declarar el callback del boton.
     actionOnClick: function () {
-        game.state.start('play');
+        this.game.state.start('preloader');
     }
 
 };
@@ -62,8 +60,7 @@ var BootScene = {
     //this.game.state.start('preloader');
       this.game.state.start('menu');
 
-      //TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
-      game.load.onLoadComplete.add(loadComplete, this);
+     
   }
 };
 
@@ -80,24 +77,28 @@ var PreloaderScene = {
       // el atlasJSONHash con 'images/rush_spritesheet.png' como imagen y 'images/rush_spritesheet.json'
       //como descriptor de la animación.
       //(HECHO)
-    this.load.onLoadStart.add(this.loadStart, this);
-    this.game.load.tilemap('tilemap', 'images/map.json');
-    this.game.load.image('tiles', 'images/simples_pimples.png');
-    this.game.load.atlas('atlasJSONHash','images/rush_spritesheet.png', 'images/rush_spritesheet.json');
-    	//¿cambiar atlas por image?
+      this.load.onLoadStart.add(this.loadStart, this);
+      this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
+      this.game.load.image('tiles', 'images/simples_pimples.png');
+      this.game.load.atlasJSONHash('rush_idle01','images/rush_spritesheet.png','images/rush_spritesheet.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+
+    	//TODO 2.2a Escuchar el evento onLoadComplete con el método loadComplete que el state 'play'
+    	this.game.load.onLoadComplete.add(this.loadComplete, this);
 	},
       
-  	
+
   loadStart: function () {
-    //this.game.state.start('play');
+ 
     console.log("Game Assets Loading ...");
+    this.game.state.start('play');
+    
   },
     
      //TODO 2.2b function loadComplete()
      //(Creo que es asi)
 
    loadComplete: function(){
-    this.ready == true;
+    this.ready = true;
    },
     
     
@@ -130,7 +131,7 @@ function init (){
  
   game.state.start('boot');
  
-  game.state.start('play');
+  //game.state.start('play');
 
 }
  
@@ -188,22 +189,23 @@ var PlayScene = {
     _jumpHight: 150, //altura máxima del salto.
     _playerState: PlayerState.STOP, //estado del player
     _direction: Direction.NONE,  //dirección inicial del player. NONE es ninguna dirección.
-    map: {},
+  
 
     //Método constructor...
   create: function () {
 
       //Creamos al player con un sprite por defecto.
       //TODO 5 Creamos a rush 'rush' con el sprite por defecto en el 10, 10 con la animación por defecto 'rush_idle01'
-      var rush = this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
-      this._rush = this.game.add.sprite(10, 10, 'rush');
-      //this._rush.frame = rush_idle;  // not sure ¿?¿?¿?¿?¿?
+    //  var rush = this.game.load.spritesheet('rush', 'images/rush_spritesheet.png');
+      this._rush = this.game.add.sprite(10, 10, 'rush_idle01');
+      
 
       //TODO 4: Cargar el tilemap 'tilemap' y asignarle al tileset 'patrones' la imagen de sprites 'tiles'
       this.game.load.tilemap('tilemap', 'images/map.json', null, Phaser.Tilemap.TILED_JSON);
-      var patrones = this.game.load.image('tiles', 'images/simples_pimples.png');
+      this.game.load.image('tiles', 'images/simples_pimples.png', null, Phaser.Tilemap.TILED_JSON);
+      this.game.load.atlasJSONHash('rush_idle01','images/rush_spritesheet.png','images/rush_spritesheet.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.map = this.game.add.tilemap('tilemap');
-      this.map.addTilesetImage('patrones', 'tiles');
+      this.map.addTilesetImage('patrones','tiles');
 
       //Creacion de las layers
       this.backgroundLayer = this.map.createLayer('BackgroundLayer');
@@ -370,7 +372,7 @@ var PlayScene = {
     },
     
     //TODO 9 destruir los recursos tilemap, tiles y logo.
-    free: function() {
+    shutdown: function() {
 
     this.cache.removeTilemap('tilemap');
     this.cache.removeImage('patrones');
